@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo -e "\033[37;1mRunning Git Hooks: pre-push\033[0;39m"
+
+# プッシュを拒否するブランチ名
+readonly INCORRECT_BRANCHES=("master" "main" "develop" "release");
+
+# main, master, develop branchでのcommitを禁止
+BRANCH_NAME=$(git symbolic-ref HEAD | sed -e 's:^refs/heads/::');
+if echo "${INCORRECT_BRANCHES[@]}" | grep -Eq "$BRANCH_NAME"; then
+    echo -e "\033[31;1m================================================================"
+    echo -e "${BRANCH_NAME}ブランチへのコミットは禁止されています。"
+    echo -e ""
+    echo -e "禁止されているブランチ"
+    echo -e "  ${INCORRECT_BRANCHES[*]}"
+    echo -e "================================================================\033[0;39m"
+    exit 1
+fi
